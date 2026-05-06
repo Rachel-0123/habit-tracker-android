@@ -1,56 +1,57 @@
 package com.example.habittracker
 
-import android.R.attr.checked
-import android.R.attr.enabled
-import android.R.attr.onClick
 import androidx.compose.ui.unit.dp
 import android.os.Bundle
-import android.widget.CheckBox
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.example.habittracker.ui.theme.HabitTrackerTheme
 import com.example.habittracker.ui.theme.MainActivityViewModel
 import kotlin.getValue
-import kotlin.properties.ReadOnlyProperty
 import androidx.lifecycle.viewmodel.compose.viewModel
+import java.time.LocalDate
 
 
 class MainActivity : ComponentActivity() {
@@ -74,75 +75,172 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ChecklistScreen(viewModel: MainActivityViewModel = viewModel()) {
 
+    val PrimaryGreen = Color(0xFF4CAF50)
+    val SoftGreen = Color(0xFF81C784)
+    val Background = Color(0xFFF2F4F7)
+    val CardBackground = Color.White
+    val TextPrimary = Color(0xFF1C1C1E)
+    val TextSecondary = Color(0xFF8E8E93)
+
+    val todaysChecked = viewModel.todaysCheckedHabits
+    val progress = viewModel.progress
+    val habits = viewModel.habits
+    val showDialog = remember { mutableStateOf(false) }
+    val newHabitText = remember { mutableStateOf("") }
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
-        verticalArrangement = Arrangement.SpaceBetween
+            .background(Background)
+            .padding(horizontal = 20.dp, vertical = 24.dp),
     ) {
+
+        //Header
         Text(
-            "My Habit Tracker", style = TextStyle(
-                fontSize = 36.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.SansSerif,
-                color = Color.DarkGray
-            )
+            "My Habits",
+            style = MaterialTheme.typography.headlineLarge,
+            fontSize = 24.sp,
+            color = TextPrimary
         )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = viewModel.formatDate(LocalDate.now()),
+            style = MaterialTheme.typography.bodyMedium,
+            color = TextSecondary
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        //Progress section
+        Text(
+            text = "$todaysChecked of ${habits.size} completed",
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(modifier = Modifier.height(8.dp))
 
 
+        val animatedProgress by animateFloatAsState(progress, label = "progress")
 
-        Text("Todays Date")
-
-
-        val checked = viewModel.checked
-        val progress = viewModel.progress
-        val habits = viewModel.habits
-
-
-        //  val listOfHabits = remember { mutableStateListOf<String>() }
-
-
-        Text("$checked completed today")
-
-        Column(
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(RoundedCornerShape(50))
+                .background(Color(0xFFE5E5EA))
         ) {
-            val habitTextStyle = TextStyle(
-                fontWeight = FontWeight.Bold, fontSize = 16.sp
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(animatedProgress)
+                    .fillMaxHeight()
+                    .background(PrimaryGreen)
             )
+        }
+        Spacer(modifier = Modifier.height(24.dp))
 
-            Column() {
-                viewModel.habits.forEachIndexed { index, name ->
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = habits[index].isChecked,
-                            onCheckedChange = { viewModel.toggleHabbit(index, it) }
+        //Habit list
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
+            itemsIndexed(viewModel.habits) { index, habit ->
+                val isChecked = viewModel.isHabitChecked(index)
+                val scale by animateFloatAsState(
+                    if (isChecked) 1.05f else 1f,
+                    label = "scale"
+                )
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { viewModel.toggleHabit(index, !isChecked) }
+                        .graphicsLayer {
+                            scaleX = scale
+                            scaleY = scale
+                        },
+                    shape = RoundedCornerShape(20.dp),
+                    elevation = CardDefaults.cardElevation(8.dp),
+                    colors = CardDefaults.cardColors(Color.White)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+
+
+                        val animatedColor by animateColorAsState(
+                            if (isChecked) PrimaryGreen else Color.LightGray,
+                            label = "color"
                         )
-                        Text(viewModel.habits[index].name)
+                        val animatedScale by animateFloatAsState(
+                            if (isChecked) 1.2f else 1f,
+                            label = "scale"
+                        )
+
+
+                        //Top row
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(26.dp)
+                                        .graphicsLayer {
+                                            scaleX = animatedScale
+                                            scaleY = animatedScale
+                                        }
+                                        .clip(CircleShape)
+                                        .background(animatedColor)
+                                        .clickable { viewModel.toggleHabit(index, !isChecked) }
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+
+                                Text(
+                                    text = habit.name,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    color = if (isChecked) PrimaryGreen else TextPrimary
+                                )
+                            }
+                            Text(
+                                text = "🔥 ${viewModel.streakCalculator(habit)}",
+                                fontSize = 13.sp,
+                                color = TextSecondary
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(12.dp))
+
+
+                        //Calendar row
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+
+
+                            for (date in viewModel.getLast7days()) {
+                                val isCompleted = date.toString() in habit.completedDates
+                                Box(
+                                    modifier = Modifier
+                                        .size(22.dp)
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .padding(2.dp)
+                                        .background(
+                                            if (isCompleted) {
+                                                PrimaryGreen
+                                            } else {
+                                                Color(0xFFCECECE)
+                                            },
+                                        )
+                                )
+                            }
+                        }
                     }
                 }
             }
-
-
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
-            ) {
-
-                Box(
-                    modifier = Modifier
-                        .height(4.dp)
-                        .fillMaxWidth(progress)
-                        .background(Color.Green, shape = RoundedCornerShape(12.dp))
-
-                )
-
-            }
-
         }
 
-        val showDialog = remember { mutableStateOf(false) }
+        Spacer(modifier = Modifier.height(16.dp))
 
+        //Buttons
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Button(
                 onClick = {
@@ -155,13 +253,13 @@ fun ChecklistScreen(viewModel: MainActivityViewModel = viewModel()) {
                 Text("Edit Habit")
             }
         }
-        val newHabitText = remember { mutableStateOf("") }
+
+        //Dialog
         if (showDialog.value) {
             AlertDialog(
                 onDismissRequest = { showDialog.value = false },
                 confirmButton = {
                     Button(
-
                         onClick = {
                             viewModel.addHabit(newHabitText.value)
                             newHabitText.value = ""
@@ -184,12 +282,12 @@ fun ChecklistScreen(viewModel: MainActivityViewModel = viewModel()) {
                         value = newHabitText.value,
                         onValueChange = { newText ->
                             newHabitText.value = newText
-                        })
+                        },
+                        placeholder = { Text("Enter habit name") })
                 })
         }
 
     }
-
 }
 
 
