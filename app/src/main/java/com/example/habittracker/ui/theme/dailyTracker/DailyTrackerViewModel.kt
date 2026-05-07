@@ -1,15 +1,16 @@
-package com.example.habittracker.ui.theme
+package com.example.habittracker.ui.theme.dailyTracker
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.platform.LocalDensity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habittracker.ui.theme.data.DataStoreManager
+import com.example.habittracker.ui.theme.data.Habit
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
+class DailyTrackerViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dataStoreManager = DataStoreManager(application)
 
@@ -89,6 +90,3 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 }
-
-
-

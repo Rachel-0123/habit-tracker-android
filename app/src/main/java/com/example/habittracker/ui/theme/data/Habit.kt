@@ -1,7 +1,6 @@
-package com.example.habittracker.ui.theme
+package com.example.habittracker.ui.theme.data
 
 import kotlinx.serialization.Serializable
-
 
 @Serializable
 data class Habit(

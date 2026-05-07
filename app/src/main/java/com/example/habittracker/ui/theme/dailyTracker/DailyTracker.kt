@@ -1,11 +1,5 @@
-package com.example.habittracker
+package com.example.habittracker.ui.theme.dailyTracker
 
-import androidx.compose.ui.unit.dp
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -33,7 +27,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -45,42 +38,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habittracker.ui.theme.HabitTrackerTheme
-import com.example.habittracker.ui.theme.MainActivityViewModel
-import kotlin.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.habittracker.ui.theme.Background
+import com.example.habittracker.ui.theme.PrimaryGreen
+import com.example.habittracker.ui.theme.TextPrimary
+import com.example.habittracker.ui.theme.TextSecondary
 import java.time.LocalDate
 
-
-class MainActivity : ComponentActivity() {
-
-    private val viewModel: MainActivityViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            HabitTrackerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ChecklistScreen()
-                }
-            }
-        }
-    }
-}
-
-
 @Composable
-fun ChecklistScreen(viewModel: MainActivityViewModel = viewModel()) {
+fun HomeScreen(viewModel: DailyTrackerViewModel = viewModel()) {
 
-    val PrimaryGreen = Color(0xFF4CAF50)
-    val SoftGreen = Color(0xFF81C784)
-    val Background = Color(0xFFF2F4F7)
-    val CardBackground = Color.White
-    val TextPrimary = Color(0xFF1C1C1E)
-    val TextSecondary = Color(0xFF8E8E93)
+
 
     val todaysChecked = viewModel.todaysCheckedHabits
     val progress = viewModel.progress
@@ -288,11 +258,4 @@ fun ChecklistScreen(viewModel: MainActivityViewModel = viewModel()) {
         }
 
     }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun ChecklistScreenPreview() {
-    ChecklistScreen()
 }
