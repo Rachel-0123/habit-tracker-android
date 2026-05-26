@@ -1,11 +1,8 @@
 package com.example.habittracker.ui.theme.data
 
 import android.content.Context
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -19,11 +16,12 @@ class DataStoreManager(private val context: Context) {
 
 
     private val HABITS_KEY = stringPreferencesKey("habits_key")
+    private val COLOR_INDEX_KEY = intPreferencesKey("color_index")
 
 
 
     suspend fun saveHabits(habits: List<Habit>) {
-        val json = Json.Default.encodeToString(habits)
+        val json = Json.encodeToString(habits)
 
         context.dataStore.edit { prefs ->
             prefs[HABITS_KEY] = json
@@ -35,6 +33,12 @@ class DataStoreManager(private val context: Context) {
             val json = prefs[HABITS_KEY] ?: return@map emptyList()
             Json.Default.decodeFromString(json)
 
+        }
+    }
+
+    fun loadColorIndex(): Flow<Int>{
+        return context.dataStore.data.map { prefs ->
+            prefs[COLOR_INDEX_KEY] ?: 0
         }
     }
 

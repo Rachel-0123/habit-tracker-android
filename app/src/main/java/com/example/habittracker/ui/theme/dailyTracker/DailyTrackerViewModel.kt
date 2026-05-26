@@ -2,6 +2,8 @@ package com.example.habittracker.ui.theme.dailyTracker
 
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habittracker.ui.theme.data.DataStoreManager
@@ -9,6 +11,8 @@ import com.example.habittracker.ui.theme.data.Habit
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+
+var colorIndex = 0
 
 class DailyTrackerViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,8 +30,8 @@ class DailyTrackerViewModel(application: Application) : AndroidViewModel(applica
     val progress
         get() = if (habits.isEmpty()) 0f else todaysCheckedHabits / habits.size.toFloat()
 
-    fun addHabit(name: String) {
-        habits.add(Habit(name))
+    fun addHabit(name: String, color: Color) {
+        habits.add(Habit(name = name, color = color.toArgb()))
         viewModelScope.launch { dataStoreManager.saveHabits(habits) }
     }
 
@@ -35,7 +39,7 @@ class DailyTrackerViewModel(application: Application) : AndroidViewModel(applica
         return today() in habits[index].completedDates
     }
 
-    fun toggleHabit(index: Int, value: Boolean) {
+    fun toggleHabit(index: Int) {
         if (isHabitChecked(index)) {
             habits[index] = habits[index].copy(
                 name = habits[index].name,
@@ -79,6 +83,18 @@ class DailyTrackerViewModel(application: Application) : AndroidViewModel(applica
         val formatter = DateTimeFormatter.ofPattern("EEEE, MMMM d")
         return date.format(formatter)
     }
+    fun updateHabit(index: Int, newText: String, color: Color){
+        habits[index] = habits[index].copy(
+            name = newText,
+            color = color.toArgb()
+        )
+        viewModelScope.launch { dataStoreManager.saveHabits(habits) }
+    }
+
+    fun deleteHabit(index: Int){
+        habits.removeAt(index)
+        viewModelScope.launch { dataStoreManager.saveHabits(habits) }
+    }
 
 
     init {
@@ -86,6 +102,9 @@ class DailyTrackerViewModel(application: Application) : AndroidViewModel(applica
             dataStoreManager.loadHabits().collect {
                 habits.clear()
                 habits.addAll(it)
+            }
+            dataStoreManager.loadColorIndex().collect {
+                colorIndex = it
             }
         }
     }

@@ -3,12 +3,10 @@ package com.example.habittracker.ui.theme.calendar
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habittracker.ui.theme.data.DataStoreManager
 import com.example.habittracker.ui.theme.data.Habit
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 class CalendarViewModel(application: Application): AndroidViewModel(application){
@@ -40,7 +38,19 @@ class CalendarViewModel(application: Application): AndroidViewModel(application)
         return firstDay.dayOfWeek.value % 7
     }
 
+//    fun getHabitsToDisplay(){
+//        for(habit in habits){
+//            if (date.toString() in habit.completedDates){
+//                habitsCompleted.add(Habit())
+//            }
+//        }
+//
+//    }
+
     init {
+
+
+
         viewModelScope.launch {
             dataStoreManager.loadHabits().collect {
                 habits.clear()

@@ -4,9 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
@@ -20,15 +18,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import kotlin.getValue
 import com.example.habittracker.ui.theme.calendar.CalendarScreen
-import com.example.habittracker.ui.theme.dailyTracker.DailyTrackerViewModel
 import com.example.habittracker.ui.theme.dailyTracker.HomeScreen
 
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: DailyTrackerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +55,6 @@ fun HabitTrackerApp() {
         when (currentDestination){
             AppDestinations.DAILY_TRACKER -> HomeScreen()
             AppDestinations.MONTHLY_TRACKER -> CalendarScreen()
-            AppDestinations.PROFILE -> ProfileScreen()
         }
     }
 
@@ -71,11 +65,8 @@ enum class AppDestinations(
 ) {
     DAILY_TRACKER("Daily Tracker", Icons.Default.Home),
     MONTHLY_TRACKER("Monthly Tracker", Icons.Default.DateRange),
-    PROFILE("Profile", Icons.Default.AccountBox),
 }
 
-@Composable
-fun ProfileScreen(){}
 
 
 @Preview(showBackground = true)
