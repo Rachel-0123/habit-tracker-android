@@ -118,7 +118,13 @@ This project was built to practice:
 
 ## Screenshots
 
-_Add screenshots here_
+<img width="400" height="869" alt="Screenshot 2026-06-08 220550" src="https://github.com/user-attachments/assets/37ce76ab-fd2b-43ed-93d2-d32c8bf80b6f" />
+<img width="399" height="870" alt="Screenshot 2026-06-08 220326" src="https://github.com/user-attachments/assets/3ccbca1f-e1db-4419-96b7-4b523ffa4168" />
+<img width="410" height="872" alt="Screenshot 2026-06-08 220250" src="https://github.com/user-attachments/assets/073ed421-304f-40cf-848d-e6cd41fbf3be" />
+<img width="407" height="871" alt="Screenshot 2026-06-08 220235" src="https://github.com/user-attachments/assets/78398e94-7f46-40d6-820a-641f09be2169" />
+<img width="407" height="873" alt="Screenshot 2026-06-08 220142" src="https://github.com/user-attachments/assets/9c1183f7-512a-4e1a-9785-4cfc7f24f7d2" />
+<img width="405" height="870" alt="Screenshot 2026-06-08 220628" src="https://github.com/user-attachments/assets/ae2f7f3c-eeb8-4335-b590-6247b2e9975c" />
+
 
 ---
 
