@@ -112,8 +112,3 @@ This project was built to practice:
 <img width="405" height="870" alt="Screenshot 2026-06-08 220628" src="https://github.com/user-attachments/assets/ae2f7f3c-eeb8-4335-b590-6247b2e9975c" />
 
 
----
-
-## License
-
-MIT License
