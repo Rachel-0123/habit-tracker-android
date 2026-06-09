@@ -87,21 +87,7 @@ View habits across the month in a calendar format with:
 - Habit categories
 - Widgets
 
----
 
-## Installation
-
-1. Clone the repository
-
-```bash
-git clone https://github.com/yourusername/habit-tracker.git
-```
-
-2. Open in Android Studio
-
-3. Run on an emulator or Android device
-
----
 
 ## Learning Goals
 
